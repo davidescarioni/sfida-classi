@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sfida Classi</title>
+<link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/service-worker.js');
+    });
+  }
+</script>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+    font-family: 'Comic Sans MS';
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    background-color: white;
+}
+
+#myModal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Assicura che la modale sia sopra gli altri elementi */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo semitrasparente */
+    overflow: auto; /* Abilita lo scrolling se la modale è più grande dello schermo */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* Centra verticalmente e orizzontalmente */
+    padding: 20px;
+    border-radius: 5px;
+    width: 50%; /* Larghezza della modale */
+}
+
+.modal-button-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+/* Stile per i pulsanti */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary:hover {
+    background-color: #fefefe;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    padding: 1em;
+    height: 100%;
+}
+
+.card {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1em;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5px; /* 5px rounded corners */
+    padding: 1em 2.5em;
+    height: 280px;
+}
+
+</style>
+</head>
+<body>
+    <h1>Sfida Classi</h1>
+    <div class="container">
+        <div class="card">
+            <h2>Terza A</h2>
+            <p>Cuoricini: <span id="punteggioA">0</span></p>
+            <button onclick="apriModale('punteggioA')" class="btn-primary">Dai un cuoricino</button>
+        </div>
+        <div class="card">
+            <h2>Terza B</h2>
+            <p>Cuoricini: <span id="punteggioB">0</span></p>
+            <button onclick="apriModale('punteggioB')" class="btn-primary">Dai un cuoricino</button>
+        </div>
+        <div class="card">
+            <h2>Terza C</h2>
+            <p>Cuoricini: <span id="punteggioC">0</span></p>
+            <button onclick="apriModale('punteggioC')" class="btn-primary">Dai un cuoricino</button>
+        </div>
+    </div>
+
+    <div id="myModal" style="display: none;">
+        <div class="modal-content">
+        <p>Sei sicuro di voler dare il punto alla classe <span id="className"></span>?</p>
+        <div class="modal-button-wrapper">
+            <button onclick="chiudiModale()" class="btn-secondary">Annulla</button>
+            <button onclick="aggiungiPunto()" class="btn-primary">Procedi</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+    var currentClassName;
+
+    // Funzione per inizializzare la pagina
+    function initPage() {
+        // Carica i punteggi iniziali da localStorage
+        const punteggioA = localStorage.getItem('punteggioA');
+        const punteggioB = localStorage.getItem('punteggioB');
+        const punteggioC = localStorage.getItem('punteggioC');
+
+        const pointsA = parseInt(punteggioA ? JSON.parse(punteggioA).punteggio : '0');
+        const pointsB = parseInt(punteggioB ? JSON.parse(punteggioB).punteggio : '0');
+        const pointsC = parseInt(punteggioC ? JSON.parse(punteggioC).punteggio : '0');
+
+        const heartsA = pointsA !== 0 ? Array(pointsA+1).join('❤️') : 0;
+
+        const heartsB = pointsB !== 0 ? Array(pointsB+1).join('❤️') : 0;
+
+        const heartsC = pointsC !== 0 ? Array(pointsC+1).join('❤️') : 0;
+
+        // Aggiorna i punteggi nei rispettivi elementi
+        document.getElementById('punteggioA').textContent = heartsA;
+        document.getElementById('punteggioB').textContent = heartsB;
+        document.getElementById('punteggioC').textContent = heartsC;
+    }
+
+    function apriModale(className) {
+        currentClassName = className;
+        document.getElementById('className').textContent = "Terza " + className.charAt(className.length - 1);
+        document.getElementById('myModal').style.display = "block";
+    }
+
+    function chiudiModale() {
+        document.getElementById('myModal').style.display = "none";
+    }
+
+    function aggiungiPunto() {
+    var punteggioSpan = document.getElementById(currentClassName);
+    var punteggio = parseInt(punteggioSpan.textContent);
+
+    // Leggi il valore di localStorage per l'ID specificato
+    var storedData = localStorage.getItem(currentClassName);
+
+    // Se storedData è null, allora nessun valore è stato memorizzato.
+    // Creiamo un oggetto per memorizzare punteggio e data.
+    var storedInfo = storedData ? JSON.parse(storedData) : { punteggio: 0, ultimoAggiornamento: null };
+
+    // Ottieni la data di oggi
+    var oggi = new Date().toDateString();
+
+    // Verifica se l'ID è stato già cliccato oggi
+    if (storedInfo.ultimoAggiornamento !== oggi) {
+        // Aggiorna il punteggio e la data di ultimoAggiornamento
+        storedInfo.punteggio++;
+        storedInfo.ultimoAggiornamento = oggi;
+
+        // Salva le informazioni aggiornate in localStorage per l'ID specificato
+        localStorage.setItem(currentClassName, JSON.stringify(storedInfo));
+
+        // Aggiorna il punteggio visualizzato nell'elemento HTML
+        punteggioSpan.textContent = storedInfo.punteggio;
+
+        // Chiudi la modale dopo aver aggiunto il punto
+        chiudiModale();
+    } else {
+        alert("Puoi aggiungere un punto solo una volta al giorno.");
+        chiudiModale(); // Chiudi la modale anche se non è possibile aggiungere il punto
+    }
+}
+
+
+    // Chiama la funzione initPage al caricamento della pagina
+    window.onload = initPage;
+
+    </script>
+</body>
+</html>
