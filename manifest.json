@@ -1,13 +1,13 @@
 {
   "name": "Sfida Classi",
-  "short_name": "Sfida Classi",
-  "start_url": "/index.html",
+  "short_name": "SC",
+  "start_url": "/sfida-classi/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/sfida-classi/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
