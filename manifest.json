@@ -1,10 +1,11 @@
 {
   "name": "Sfida Classi",
-  "short_name": "SC",
+  "short_name": "SfidaClassi",
+  "description": "Una app per sfide tra classi",
   "start_url": "/sfida-classi/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "theme_color": "#0056B3",
   "icons": [
     {
       "src": "/sfida-classi/icon.png",
