@@ -24,6 +24,8 @@ body {
     font-family: 'Comic Sans MS';
     background-image: url(background-cleaning.jpg);
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 h1 {
@@ -121,6 +123,11 @@ button {
     padding: 1em 2.5em;
     height: 280px;
     min-width: 15%;
+    width: 100%;
+
+    @media screen and (min-width: 769px) {
+        width: auto;
+    }
 }
 
 .error {
@@ -210,6 +217,7 @@ button {
 
     function aggiungiPunto() {
     var punteggioSpan = document.getElementById(currentClassName);
+    var totaleSpan = document.getElementById("totale"+currentClassName.charAt(currentClassName.length-1))
     var punteggio = parseInt(punteggioSpan.textContent);
 
     // Leggi il valore di localStorage per l'ID specificato
@@ -233,6 +241,7 @@ button {
 
         // Aggiorna il punteggio visualizzato nell'elemento HTML
         punteggioSpan.textContent = Array(storedInfo.punteggio+1).join('❤️');
+        totaleSpan.textContent = storedInfo.punteggio;
         // Chiudi la modale dopo aver aggiunto il punto
         chiudiModale();
     } else {
