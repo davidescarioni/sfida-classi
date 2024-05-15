@@ -123,13 +123,10 @@ button {
     padding: 1em 2.5em;
     height: 280px;
     min-width: 15%;
+    width: 100%;
 
-    @media screen and (orientation: landscape) {
+    @media screen and (min-width: 576px) {
         width: auto;
-    }
-    
-    @media screen and (orientation: portrait) {
-        width: 100%;
     }
 }
 
